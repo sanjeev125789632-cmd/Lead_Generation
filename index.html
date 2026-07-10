@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LaunchPad — Web Outreach Lead Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header>
+    <div class="logo-section">
+      <button class="mobile-toggle-btn" id="mobile-toggle-btn">
+        <span class="btn-icon">🔍</span> Filters
+      </button>
+      <div class="logo-icon">L</div>
+      <div>
+        <h1 class="logo-text">LAUNCHPAD</h1>
+        <p style="font-size: 0.65rem; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px; margin-top: -2px;">OUTREACH & LEAD TRACKER</p>
+      </div>
+    </div>
+
+    <!-- Dashboard Analytics Header Row -->
+    <div class="stats-container">
+      <div class="stat-item">
+        <span class="stat-label">Total Leads</span>
+        <span class="stat-value" id="stat-total-leads">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Contacted</span>
+        <span class="stat-value" id="stat-contacted" style="color: var(--status-contacted-text);">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Demos Sent</span>
+        <span class="stat-value" id="stat-demos" style="color: var(--status-demo-text);">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Closed Wins</span>
+        <span class="stat-value" id="stat-won" style="color: var(--status-won-text);">0</span>
+      </div>
+      <div class="stat-item" style="background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.2);">
+        <span class="stat-label">Won Revenue</span>
+        <span class="stat-value revenue" id="stat-revenue"><span class="currency">₹</span>0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <div class="main-wrapper">
+    
+    <!-- Sidebar: Search & Filters -->
+    <aside class="sidebar" id="sidebar">
+      <!-- Mobile Sidebar Header -->
+      <div class="sidebar-header-mobile">
+        <h3>Filters & Search</h3>
+        <button id="close-sidebar-mobile">&times;</button>
+      </div>
+      <!-- Search -->
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" class="search-input" placeholder="Search name, phone, notes...">
+      </div>
+
+      <!-- Region Filter -->
+      <div class="filter-group">
+        <div class="filter-title">
+          <span>Region</span>
+        </div>
+        <div class="filter-chips" id="region-chips">
+          <button class="filter-chip active" data-region="All">All</button>
+          <button class="filter-chip" data-region="Delhi">Delhi</button>
+          <button class="filter-chip" data-region="Mumbai">Mumbai</button>
+          <button class="filter-chip" data-region="Himachal Pradesh">Himachal</button>
+          <button class="filter-chip" data-region="Uttarakhand">Uttarakhand</button>
+        </div>
+      </div>
+
+      <!-- Category Filter -->
+      <div class="filter-group">
+        <div class="filter-title">
+          <span>Category</span>
+        </div>
+        <select id="category-filter" class="filter-select">
+          <option value="All">All Categories</option>
+          <option value="Café">Cafés</option>
+          <option value="Gym">Gyms & Fitness</option>
+          <option value="Electrician">Electricians</option>
+          <option value="Salon/Spa">Salons & Spas</option>
+          <option value="Tailor/Boutique">Tailors & Boutiques</option>
+          <option value="Dentist">Dentists</option>
+          <option value="Adventure/Tour">Adventure & Tours</option>
+          <option value="Real Estate">Real Estate Brokers</option>
+        </select>
+      </div>
+
+      <!-- Status Filter -->
+      <div class="filter-group">
+        <div class="filter-title">
+          <span>Outreach Status</span>
+        </div>
+        <select id="status-filter" class="filter-select">
+          <option value="All">All Statuses</option>
+          <option value="To contact">To Contact</option>
+          <option value="Contacted">Contacted</option>
+          <option value="Demo Sent">Demo Sent</option>
+          <option value="Closed - Won">Closed - Won</option>
+          <option value="Closed - Lost">Closed - Lost</option>
+          <option value="Disqualified">Disqualified</option>
+        </select>
+      </div>
+
+      <!-- Sorting Options -->
+      <div class="filter-group">
+        <div class="filter-title">
+          <span>Sort By</span>
+        </div>
+        <select id="sort-by" class="filter-select">
+          <option value="rating">Rating (Highest first)</option>
+          <option value="reviews">Review Count (Highest first)</option>
+          <option value="revenue">Potential Value (Highest first)</option>
+          <option value="name">Business Name (A-Z)</option>
+        </select>
+      </div>
+
+      <!-- Create Lead Action Button -->
+      <button class="btn-primary" id="add-lead-btn" style="margin-top: 30px;">
+        <span>➕</span> Add Custom Lead
+      </button>
+    </aside>
+
+    <!-- Leads Display Board -->
+    <main class="leads-board">
+      <div class="board-header">
+        <div class="board-title-area">
+          <h2 class="board-title">Prospect Pool</h2>
+          <span class="leads-count" id="leads-count">0 prospects</span>
+        </div>
+      </div>
+
+      <!-- Cards Grid -->
+      <div class="leads-grid" id="leads-grid">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </main>
+
+    <!-- Detail Drawer Panel -->
+    <aside class="detail-panel closed" id="detail-panel">
+      <div class="detail-header">
+        <div class="detail-title-area">
+          <h2 class="detail-name" id="detail-name">Select a Lead</h2>
+          <div class="detail-sub" id="detail-sub">
+            <!-- Dynamic tags -->
+          </div>
+        </div>
+        <button class="detail-close-btn" onclick="closeDetailPanel()">&times;</button>
+      </div>
+
+      <div class="detail-body">
+        
+        <!-- Quick Detail Fields -->
+        <div class="detail-section">
+          <span class="detail-sec-title">Lead Parameters</span>
+          <div class="detail-input-grid">
+            <div class="detail-field">
+              <span class="detail-field-label">Status</span>
+              <select id="detail-status-select" class="detail-input">
+                <option value="To contact">To contact</option>
+                <option value="Contacted">Contacted</option>
+                <option value="Demo Sent">Demo Sent</option>
+                <option value="Closed - Won">Closed - Won</option>
+                <option value="Closed - Lost">Closed - Lost</option>
+                <option value="Disqualified">Disqualified</option>
+              </select>
+            </div>
+            <div class="detail-field">
+              <span class="detail-field-label">Est. Revenue Value (₹)</span>
+              <input type="number" id="detail-revenue-val" class="detail-input" placeholder="₹10,000">
+            </div>
+            <div class="detail-field">
+              <span class="detail-field-label">Phone</span>
+              <input type="text" id="detail-phone" class="detail-input" placeholder="No phone listed">
+            </div>
+            <div class="detail-field">
+              <span class="detail-field-label">Rating / Reviews</span>
+              <div style="display: flex; gap: 4px;">
+                <input type="number" step="0.1" max="5" id="detail-rating" class="detail-input" placeholder="Rating" style="width: 50%;">
+                <input type="number" id="detail-reviews" class="detail-input" placeholder="Reviews" style="width: 50%;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Notes -->
+        <div class="detail-section">
+          <span class="detail-sec-title">Pitch Notes & Action Logs</span>
+          <textarea id="detail-notes" class="detail-notes-area" placeholder="Enter comments, owner name, custom schedule details, review feedback..."></textarea>
+        </div>
+
+        <!-- Outreach Scripts Workspace -->
+        <div class="detail-section">
+          <span class="detail-sec-title">Pitch Script Builder</span>
+          
+          <div class="tabs-container">
+            <div class="tabs-header">
+              <button class="tab-btn active" data-tab="whatsapp">WhatsApp</button>
+              <button class="tab-btn" data-tab="call">Phone Call</button>
+              <button class="tab-btn" data-tab="email">Email</button>
+              <button class="tab-btn" data-tab="demoFirst">Demo-First</button>
+            </div>
+            <div class="tab-content">
+              <div class="script-box" id="script-box">
+                <!-- Dynamically generated script will go here -->
+              </div>
+              <div class="script-actions">
+                <button class="btn-secondary" id="copy-script-btn">
+                  📋 Copy Text
+                </button>
+                <button class="btn-secondary btn-whatsapp" id="whatsapp-btn">
+                  💬 Send WhatsApp
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- Add Lead Modal Overlay -->
+  <div class="modal-overlay" id="add-lead-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Create Custom Lead</h3>
+        <button class="modal-close" id="close-modal">&times;</button>
+      </div>
+
+      <form id="add-lead-form">
+        <div class="form-grid">
+          <div class="form-field full-width">
+            <label for="add-name">Business Name *</label>
+            <input type="text" id="add-name" required placeholder="e.g. Café Hideout">
+          </div>
+
+          <div class="form-field">
+            <label for="add-type">Category *</label>
+            <select id="add-type" required>
+              <option value="Café">Café</option>
+              <option value="Gym">Gym & Fitness</option>
+              <option value="Electrician">Electrician</option>
+              <option value="Salon/Spa">Salon/Spa</option>
+              <option value="Tailor/Boutique">Tailor/Boutique</option>
+              <option value="Dentist">Dentist</option>
+              <option value="Adventure/Tour">Adventure/Tour</option>
+              <option value="Real Estate">Real Estate</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="add-region">Region *</label>
+            <select id="add-region" required>
+              <option value="Delhi">Delhi</option>
+              <option value="Mumbai">Mumbai</option>
+              <option value="Himachal Pradesh">Himachal Pradesh</option>
+              <option value="Uttarakhand">Uttarakhand</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="add-location">Locality *</label>
+            <input type="text" id="add-location" required placeholder="e.g. Tapovan, Bandra West">
+          </div>
+
+          <div class="form-field">
+            <label for="add-phone">Phone / WhatsApp</label>
+            <input type="text" id="add-phone" placeholder="e.g. 098765 43210">
+          </div>
+
+          <div class="form-field">
+            <label for="add-rating">Google Rating</label>
+            <input type="number" step="0.1" min="1" max="5" id="add-rating" placeholder="4.8">
+          </div>
+
+          <div class="form-field">
+            <label for="add-reviews">Review Count</label>
+            <input type="number" id="add-reviews" placeholder="120">
+          </div>
+
+          <div class="form-field full-width">
+            <label for="add-revenue">Est. Deal Value (₹)</label>
+            <input type="number" id="add-revenue" value="10000" placeholder="10000">
+          </div>
+
+          <div class="form-field full-width">
+            <label for="add-notes">Lead Description & Notes</label>
+            <textarea id="add-notes" rows="3" placeholder="Add specific target info, reviews, timing..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="cancel-modal" style="flex: none; width: 100px;">Cancel</button>
+          <button type="submit" class="btn-primary" style="flex: none; width: 140px; margin-top: 0;">Add Lead</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Overlays for Mobile Drawer Menus -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <div class="detail-overlay" id="detail-overlay"></div>
+
+  <!-- Toast Notification Pop-up -->
+  <div class="toast" id="toast">
+    Success notification text!
+  </div>
+
+  <!-- Script Declarations -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
